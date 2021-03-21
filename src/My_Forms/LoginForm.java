@@ -5,8 +5,15 @@
  */
 package My_Forms;
 
+import My_Classes.DB;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,20 +30,12 @@ public class LoginForm extends javax.swing.JFrame {
         //centriranje forme
         this.setLocationRelativeTo(null);
         
-        //Poziv funkcije da se pokaze slika
-        displayImage();
+        //Poziv funkcije da se pokaze slika na vrhu
+        My_Classes.Func_Class func = new My_Classes.Func_Class();
+        func.displayImage(jLabel_Logo.getWidth(), jLabel_Logo.getHeight(), "/My_Images/book_login_logo.jpg", jLabel_Logo);
     }
     
-    // Function for displaying the image in jlabel
-    public void displayImage(){
-        //ucitavanje slike
-        ImageIcon imgIco = new ImageIcon(getClass().getResource("/My_Images/book_login_logo.jpg"));
-       //Kako bi slika fitovala se u label
-        Image image = imgIco.getImage().getScaledInstance(jLabel_Logo.getWidth(), jLabel_Logo.getHeight(), Image.SCALE_SMOOTH);
-        //Postavljanje slike unutar našeg JLabel-a
-        jLabel_Logo.setIcon(new ImageIcon(image));
-    }
-    
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,12 +49,12 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel_Logo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextField_Username = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        jPassword_Pass = new javax.swing.JPasswordField();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        jComboBox_UserType = new javax.swing.JComboBox<>();
+        jButton_Login = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,24 +68,29 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Password:");
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField_Username.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Username:");
 
-        jPasswordField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jPassword_Pass.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("User Type:");
 
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox_UserType.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jComboBox_UserType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButton1.setBackground(new java.awt.Color(204, 153, 0));
-        jButton1.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Login");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton_Login.setBackground(new java.awt.Color(204, 153, 0));
+        jButton_Login.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
+        jButton_Login.setForeground(new java.awt.Color(255, 255, 255));
+        jButton_Login.setText("Login");
+        jButton_Login.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton_Login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_LoginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -95,10 +99,10 @@ public class LoginForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_Login, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextField_Username, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPassword_Pass, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox_UserType, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -113,17 +117,17 @@ public class LoginForm extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField_Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPassword_Pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBox_UserType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_Login, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(33, Short.MAX_VALUE))
         );
 
@@ -164,6 +168,65 @@ public class LoginForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //login button
+    private void jButton_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_LoginActionPerformed
+        // TODO add your handling code here:
+         
+        //Uzimamo username i password
+        //usertype ce se poslije odradit
+        String username = jTextField_Username.getText();
+        String password = String.valueOf(jPassword_Pass.getPassword());
+        
+        ResultSet rs;
+        PreparedStatement ps;
+        
+        //SELECT query
+        String query = "SELECT * FROM `users` WHERE `username` = ? AND `password`=?";
+        
+        //provjera ukoliko su polja prazna
+        if(username.trim().equals("") || password.trim().equals(""))
+        {
+            JOptionPane.showMessageDialog(null,"Upišite vaše korisničko ime i šifru","Prazna polja",2);
+        }
+        else
+        {
+            try {
+                
+                //konekcija od klase DB
+                ps = DB.getConnection().prepareStatement(query);
+                
+                
+                ps.setString(1, username);
+                ps.setString(2, password);
+                
+                rs = ps.executeQuery();
+                
+                //Provjeravamo ako korisnik postoji
+
+
+                //ako korisnik postoji
+                if(rs.next())
+                {
+                    // Prikazuje se dashboard forma
+                    DashboardForm dash_f = new DashboardForm();
+                    dash_f.setVisible(true);
+                    
+                    //zatvaramo login formu
+                    
+                    this.dispose();
+                }
+                //Ako korisnik ne postoji
+                else
+                {
+                    JOptionPane.showMessageDialog(null,"Niste unijeli tačan username/password","Neispravni podaci",0);
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton_LoginActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -200,15 +263,15 @@ public class LoginForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton jButton_Login;
+    private javax.swing.JComboBox<String> jComboBox_UserType;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel_Logo;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField jPassword_Pass;
+    private javax.swing.JTextField jTextField_Username;
     // End of variables declaration//GEN-END:variables
 }
